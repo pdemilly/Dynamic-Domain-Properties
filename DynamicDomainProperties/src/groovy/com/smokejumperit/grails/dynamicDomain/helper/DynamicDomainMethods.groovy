@@ -11,7 +11,7 @@ import org.apache.commons.collections.map.*
 import com.smokejumperit.grails.dynamicDomain.DynamicProperty as DynProp
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.runtime.metaclass.*
-import jconch.cache.*
+import jconch.cache.GroovyCacheMap
 
 import org.apache.log4j.*
 
@@ -146,11 +146,10 @@ class DynamicDomainMethods {
     }
     mc.getLocalDynamicProperty = {String name->
       assert delegate?.id
-      def toReturn = DynProp.query("parentClassValue = :pclass and parentId = :pid and propertyName = :name",
+      def toReturn = DynProp.find("from DynamicProperty as d where d.parentClassValue = :pclass and d.parentId = :pid and d.propertyName = :name",
         [pclass:delegate.getClass().name, pid:stringify(delegate.id), name:name]
       )
-      if(toReturn) toReturn = toReturn[0]
-      return logAndReturn("getLocalDynamicProperty w/id: \"${toReturn.propertyValue}\"", toReturn)
+      return logAndReturn("getLocalDynamicProperty w/id: \"${toReturn?.propertyValue}\"", toReturn)
     }
     mc.setLocalDynamicProperty = { String name, value ->
       def prop = getLocalDynamicProperty(name)

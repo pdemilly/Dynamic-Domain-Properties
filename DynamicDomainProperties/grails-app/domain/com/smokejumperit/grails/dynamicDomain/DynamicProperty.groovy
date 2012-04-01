@@ -87,18 +87,18 @@ class DynamicProperty {
     switch(clazz) {
       case null: return null
       case Collection:
-        def dbValues = query("parentId = :parId and parentClassValue = :parClazz",
+        def dbValues = findAll("from DynamicProperty as d where d.parentId = :parId and d.parentClassValue = :parClazz",
           [parId:stringify(dynProp.id), parClazz:dynProp.getClass().name]
-        ) as List
+        )
         def toReturn = constructWithFallback(clazz, [])
         (0..Long.parseLong(val)-1).each { idx ->
           toReturn[idx] = dbValues.find { it.idx == idx }?.propertyValue
         }
         return toReturn
       case Map:
-        def dbValues = query("parentId = :parId and parentClassValue = :parClazz",
+        def dbValues = findAll("from DynamicProperty as d where d.parentId = :parId and d.parentClassValue = :parClazz",
           [parId:stringify(dynProp.id), parClazz:dynProp.getClass().name]
-        ) as List
+        )
         def toReturn = constructWithFallback(clazz, [:])
         (0..Long.parseLong(val)-1).each { idx ->
           def k = dbValues.find { it.idx == idx && it.isKey == true }?.propertyValue

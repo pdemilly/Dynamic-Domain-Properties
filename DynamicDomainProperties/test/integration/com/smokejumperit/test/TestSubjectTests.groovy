@@ -52,6 +52,10 @@ class TestSubjectTests extends GrailsUnitTestCase {
 
   void testNullProperty() { doTestProperty(null) }
 
+  void testGetNonExistantProperty() {
+      assertNull fixture.doesNotExist
+  }
+
   void doTestProperty(value) {
     println "Testing property with value $value (${value?.getClass()})"
     assignProperty(fixture, "foo", value)
